@@ -1,5 +1,6 @@
 function RAFParallax (params) {
 
+	this.throttleDelayMs = 100;
 	this.setter(params);
 
 	this.init();
@@ -68,11 +69,14 @@ RAFParallax.prototype = {
 
 	listeners: function () {
 
-		document.addEventListener('scroll', this.onScroll.bind(this));
+		var onScroll = this.throttle(this.onScroll, this.throttleDelayMs);
+		document.addEventListener('scroll', onScroll.bind(this));
 
 	},
 
 	onScroll: function () {
+
+		console.log('onScroll');
 
 		var top  = window.pageYOffset || document.documentElement.scrollTop,
 			left = window.pageXOffset || document.documentElement.scrollLeft;
@@ -93,10 +97,53 @@ RAFParallax.prototype = {
 			bp = this.breakpoints[k];
 
 			if (params.top >= bp.pos.top && params.top <= bp.pos.bottom) {
-				console.log(bp.callback());
+
+				if (typeof bp.callback === "function") {
+
+					bp.callback();
+
+				}
+
 			}
 
 		}
+
+	},
+
+	// from _underscore lib
+	debounce: function (func, wait, immediate) {
+
+		var timeout;
+
+		return function () {
+			var context = this, args = arguments;
+			var later = function() {
+				timeout = null;
+				if (!immediate) func.apply(context, args);
+			};
+			var callNow = immediate && !timeout;
+			clearTimeout(timeout);
+			timeout = setTimeout(later, wait);
+			if (callNow) func.apply(context, args);
+		};
+
+	},
+
+	// by Ryan Taylor
+	throttle: function (func, ms) {
+
+		var last = 0;
+
+		return function () {
+
+			var a = arguments, t = this, now = +(new Date());
+
+			if (now >= last + ms) {
+				last = now;
+				func.apply(t, a);
+			}
+
+		};
 
 	}
 
