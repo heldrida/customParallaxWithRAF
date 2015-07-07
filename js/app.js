@@ -1,6 +1,10 @@
+/**
+ * A parallax library that uses the request animation frame, breakpoints that trigger custom user functions.
+ * @param {object} params { containerElement: '', containerChildClassName: '', breakpointCallbacks: {}}
+ */
 function RAFParallax (params) {
 
-	this.throttleDelayMs = 100;
+	this.throttleDelayMs = 10;
 	this.setter(params);
 
 	this.init();
@@ -22,6 +26,7 @@ RAFParallax.prototype = {
 		this.containerChildElementNodeList = document.querySelectorAll(params.containerChildClassName);
 		this.panels = this.getNodeListToArray(this.containerChildElementNodeList);
 		this.setBreakpointPositions();
+		this.setBreakpointCallbacks();
 
 	},
 
@@ -51,6 +56,12 @@ RAFParallax.prototype = {
 			};
 
 		}.bind(this));
+
+	},
+
+	setBreakpointCallbacks: function () {
+
+
 
 	},
 
