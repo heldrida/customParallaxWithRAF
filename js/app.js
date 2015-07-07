@@ -4,7 +4,7 @@
  */
 function RAFParallax (params) {
 
-	this.throttleDelayMs = 10;
+	this.throttleDelayMs = 20;
 	this.setter(params);
 
 	this.init();
