@@ -25,6 +25,7 @@ RAFParallax.prototype = {
 		this.container = document.querySelector(params.containerElement);
 		this.containerChildElementNodeList = document.querySelectorAll(params.containerChildClassName);
 		this.panels = this.getNodeListToArray(this.containerChildElementNodeList);
+		this.breakpointCallbacks = params.breakpointCallbacks;
 		this.setBreakpointPositions();
 		this.setBreakpointCallbacks();
 
@@ -45,14 +46,14 @@ RAFParallax.prototype = {
 			var panelName = panel.getAttribute('data-breakpoint');
 
 			this.breakpoints[panelName] = {
+
 				pos: {
 					top: panel.offsetTop,
 					bottom: panel.offsetTop + panel.offsetHeight
 				},
 
-				callback: function () {
-					console.log('callback for ' + panelName + ' is not declared yet!');
-				}
+				callback: typeof this.breakpointCallbacks[panelName] === "function" ? this.breakpointCallbacks[panelName] : null
+
 			};
 
 		}.bind(this));
@@ -164,7 +165,25 @@ RAFParallax.prototype = {
 
 	var parallax = new RAFParallax({
 		containerElement: '.rafp-container',
-		containerChildClassName: '.rafp-panel'
+		containerChildClassName: '.rafp-panel',
+		breakpointCallbacks: {
+			'panel-1': function () {
+				console.log('this is panel-1 callback and does something!');
+			},
+
+			'panel-2': function () {
+				console.log('this is panel-2 callback and does something!');
+			},
+
+			'panel-3': function () {
+				console.log('this is panel-3 callback and does something!');
+			},
+
+			'panel-4': function () {
+				console.log('this is panel-4 callback and does something!');
+			},
+
+		}
 	});
 
 	window.parallax = parallax;
