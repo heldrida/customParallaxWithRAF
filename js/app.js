@@ -20,7 +20,7 @@ RAFParallax.prototype = {
 		this.container = document.querySelector(params.containerElement);
 		this.containerChildElementNodeList = document.querySelectorAll(params.containerChildClassName);
 		this.panels = this.getNodeListToArray(this.containerChildElementNodeList);
-		this.setBreakpoints();
+		this.setBreakpointPositions();
 
 	},
 
@@ -30,15 +30,23 @@ RAFParallax.prototype = {
 
 	},
 
-	setBreakpoints: function () {
+	setBreakpointPositions: function () {
 
 		this.breakpoints = {};
 
 		this.panels.forEach(function (panel, index) {
 
-			this.breakpoints[panel.getAttribute('data-breakpoint')] = {
-				top: panel.offsetTop,
-				bottom: panel.offsetTop + panel.offsetHeight
+			var panelName = panel.getAttribute('data-breakpoint');
+
+			this.breakpoints[panelName] = {
+				pos: {
+					top: panel.offsetTop,
+					bottom: panel.offsetTop + panel.offsetHeight
+				},
+
+				callback: function () {
+					console.log('callback for ' + panelName + ' is not declared yet!');
+				}
 			};
 
 		}.bind(this));
@@ -78,10 +86,14 @@ RAFParallax.prototype = {
 
 	breakpointCallbackChecker: function (params) {
 
+		var bp = null;
+
 		for (var k in this.breakpoints) {
 
-			if (params.top >= this.breakpoints[k].top && params.top <= this.breakpoints[k].bottom) {
-				console.log('callback for ' + this.breakpoints[k].top);
+			bp = this.breakpoints[k];
+
+			if (params.top >= bp.pos.top && params.top <= bp.pos.bottom) {
+				console.log(bp.callback());
 			}
 
 		}
