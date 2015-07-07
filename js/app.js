@@ -36,7 +36,10 @@ RAFParallax.prototype = {
 
 		this.panels.forEach(function (panel, index) {
 
-			this.breakpoints[panel.getAttribute('data-breakpoint')] = panel.offsetTop;
+			this.breakpoints[panel.getAttribute('data-breakpoint')] = {
+				top: panel.offsetTop,
+				bottom: panel.offsetTop + panel.offsetHeight
+			};
 
 		}.bind(this));
 
@@ -64,10 +67,24 @@ RAFParallax.prototype = {
 	onScroll: function () {
 
 		var top  = window.pageYOffset || document.documentElement.scrollTop,
-				left = window.pageXOffset || document.documentElement.scrollLeft;
+			left = window.pageXOffset || document.documentElement.scrollLeft;
 
-		console.log('top', top);
-		console.log('left', left);
+		this.breakpointCallbackChecker({
+			top: top,
+			left: left
+		});
+
+	},
+
+	breakpointCallbackChecker: function (params) {
+
+		for (var k in this.breakpoints) {
+
+			if (params.top >= this.breakpoints[k].top && params.top <= this.breakpoints[k].bottom) {
+				console.log('callback for ' + this.breakpoints[k].top);
+			}
+
+		}
 
 	}
 
