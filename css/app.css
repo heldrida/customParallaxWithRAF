@@ -1,0 +1,11 @@
+.container section {
+  width: 100vw;
+  height: 100vh; }
+  .container section.yellow {
+    background: #ccf; }
+  .container section.red {
+    background: #ecf; }
+  .container section.green {
+    background: #ced; }
+  .container section.blue {
+    background: #dcf; }

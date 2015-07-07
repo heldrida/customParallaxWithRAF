@@ -1,19 +1,25 @@
 .container {
+
   section {
     width: 100vw;
     height: 100vh;
     
     &.yellow {
-      background: yellow;
+      background: #ccf;
     }
+    
     &.red {
-      background: red;
+      background: #ecf;
     }
+    
     &.green {
-      background: green;
+      background: #ced;
     }
+
     &.blue {
-      background: blue;
+      background: #dcf;
     }
+
   }
+
 }

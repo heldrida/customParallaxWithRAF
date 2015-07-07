@@ -26,7 +26,7 @@ gulp.task('watch', function () {
 
     // Watch `scss` files
     gulp.watch('sass/*.scss', ['sass']);
-    
+
     // Create liveReload server
     livereload.listen();
 

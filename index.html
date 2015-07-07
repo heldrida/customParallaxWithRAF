@@ -3,20 +3,21 @@
 <head>
 <meta name="description" content="paralax prototype">
   <meta charset="utf-8">
-  <title>JS Bin</title>
+  <title>Custom Parallax with RAF</title>
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
   <link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
 <body>
 
-  <div class="container">
-    
-    <section class="yellow">hello</section>
-    <section class="red">world</section>
-    <section class="green">planet</section>
-    <section class="blue">city</section>
-    
+  <div class="container rafp-container">
+
+    <section class="rafp-panel yellow" data-breakpoint="panel-1">helloa</section>
+    <section class="rafp-panel red" data-breakpoint="panel-2">world</section>
+    <section class="rafp-panel green" data-breakpoint="panel-3">planet</section>
+    <section class="rafp-panel blue" data-breakpoint="panel-4">city</section>
+
   </div>
-  
+
   <script type="text/javascript" src="js/app.js">
   </script>
 </body>
