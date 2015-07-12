@@ -11,10 +11,13 @@ function RAFParallax (params) {
 RAFParallax.prototype = {
 
 	init: function (params) {
+		 
+		window.scroll(0, 0);
 
 		this.scrolling = false;
 		this.mouseWheelActive = false;
 		this.mouseDelta = 0;
+		this.calculated_scroll_y = 0;
 		this.count = 0;
 		/*
 		this.requestAnimationFrame =	window.requestAnimationFrame ||
@@ -34,7 +37,16 @@ RAFParallax.prototype = {
 		this.breakpointCallbacks = params.breakpointCallbacks;
 		this.setBreakpointPositions();
 
+		this.resize();
 		this.listeners();
+
+	},
+
+	resize: function () {
+
+		this.container.style.width = window.innerWidth + 'px';
+		this.container.style.height = window.innerHeight + 'px';
+		this.container.style.overflow = 'hidden';
 
 	},
 
@@ -50,8 +62,6 @@ RAFParallax.prototype = {
 
 	listeners: function () {
 
-		window.addEventListener("scroll", this.setScrolling.bind(this), false);
-
 		// deal with the mouse wheel
 		window.addEventListener("mousewheel", this.mouseScroll.bind(this), false);
 		window.addEventListener("DOMMouseScroll", this.mouseScroll.bind(this), false);
@@ -60,31 +70,31 @@ RAFParallax.prototype = {
 
 	},
 
-	setScrolling: function () {
-
-		this.scrolling = true;
-
-	},
-
 	mouseScroll: function (e) {
-
-		this.mouseWheelActive = true;
 
 		// cancel the default scroll behavior
 		if (e.preventDefault) {
-
 			e.preventDefault();
+		}
 
+		this.calculated_scroll_y -= e.wheelDelta;
+
+		if (this.calculated_scroll_y > 0) {
+			this.calculated_scroll_y = 0;
+		}
+
+		if (Math.abs(parseInt(this.yPosition)) > this.breakpoints['panel-4'].pos.top) {
+			this.calculated_scroll_y = (this.breakpoints['panel-4'].pos.top) * -1;
 		}
 
 		// deal with different browsers calculating the delta differently
 		if (e.wheelDelta) {
 
-			this.mouseDelta = e.wheelDelta / 120;
+			this.mouseDelta = e.wheelDelta;
 
 		} else if (e.detail) {
 
-			this.mouseDelta = -e.detail / 3;
+			this.mouseDelta = -e.detail;
 
 		}
 
@@ -92,19 +102,7 @@ RAFParallax.prototype = {
 
 	getScrollPosition: function () {
 
-		var y = 0;
-
-		if (document.documentElement.scrollTop === 0) {
-
-			y = document.body.scrollTop;
-
-		} else {
-
-			y = document.documentElement.scrollTop;
-
-		}
-
-		this.eased_scroll_y += ( (y) - this.eased_scroll_y) * this.ease;
+		this.eased_scroll_y += ( (this.calculated_scroll_y) - this.eased_scroll_y) * this.ease;
 
 		return this.eased_scroll_y;
 	},
@@ -112,7 +110,6 @@ RAFParallax.prototype = {
 	setTranslate3DTransform: function  (element, yPosition) {
 		var value = "translate3d(0px" + ", " + yPosition + "px" + ", 0)";
 		element.style.webkitTransform = value;
-		this.yPosition = yPosition;
 	},
 
 	loop: function () {
@@ -120,28 +117,13 @@ RAFParallax.prototype = {
 		var yPosition = this.getScrollPosition();
 
 		// adjust scroll wrap when scrolling
-		this.setTranslate3DTransform(this.scrollWrap, yPosition / 2);
+		this.setTranslate3DTransform(this.scrollWrap, yPosition);
 
-		// scroll up or down by 10 pixels when the mousewheel is used
-		if (this.mouseWheelActive) {
-			window.scrollBy(0, -this.mouseDelta * 10);
-			this.count++;
+		this.yPosition = yPosition;
 
-			// stop the scrolling after a few moments
-			if (this.count > 20) {
-				this.count = 0;
-				this.mouseWheelActive = false;
-				this.mouseDelta = 0;
-			}
-		}
-
-		this.breakpointCallbackChecker({
-			top: this.yPosition,
-			left: 0
-		});
+		this.breakpointCallbackChecker();
 
 	    requestAnimationFrame(this.loop.bind(this));
-
 	},
 
 	setBreakpointPositions: function () {
@@ -171,15 +153,16 @@ RAFParallax.prototype = {
 
 	},
 
-	breakpointCallbackChecker: function (params) {
+	breakpointCallbackChecker: function () {
 
-		var bp = null;
+		var bp = null,
+			y = Math.abs(this.yPosition);
 
 		for (var k in this.breakpoints) {
 
 			bp = this.breakpoints[k];
 
-			if (params.top >= bp.pos.top && params.top <= bp.pos.bottom) {
+			if (y >= bp.pos.top && y <= bp.pos.bottom) {
 
 				if (typeof bp.callback === "function") {
 
