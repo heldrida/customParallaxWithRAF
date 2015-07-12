@@ -1,11 +1,25 @@
-.container section {
+.container {
   width: 100vw;
-  height: 100vh; }
-  .container section.yellow {
-    background: #ccf; }
-  .container section.red {
-    background: #ecf; }
-  .container section.green {
-    background: #ced; }
-  .container section.blue {
-    background: #dcf; }
+  height: 100vh;
+  overflow: hidden; }
+  .container section {
+    width: 100vw;
+    height: 100vh; }
+    .container section.yellow {
+      background: #ccf; }
+    .container section.red {
+      background: #ecf; }
+    .container section.green {
+      background: #ced; }
+    .container section.blue {
+      background: #dcf; }
+  .container [data-breakpoint="panel-1"] {
+    position: relative; }
+    .container [data-breakpoint="panel-1"] .col {
+      width: 50%;
+      height: 100%;
+      text-align: center;
+      overflow: hidden;
+      background-image: url(http://www.peta.org/wp-content/uploads/2014/12/kitten1.jpg);
+      background-position: center center;
+      background-size: cover; }

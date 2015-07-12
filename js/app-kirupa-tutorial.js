@@ -14,6 +14,7 @@ RAFParallax.prototype = {
 		 
 		window.scroll(0, 0);
 
+		this.scrollLock = false;
 		this.scrolling = false;
 		this.mouseWheelActive = false;
 		this.mouseDelta = 0;
@@ -108,8 +109,11 @@ RAFParallax.prototype = {
 	},
 
 	setTranslate3DTransform: function  (element, yPosition) {
+
 		var value = "translate3d(0px" + ", " + yPosition + "px" + ", 0)";
+	
 		element.style.webkitTransform = value;
+
 	},
 
 	loop: function () {
@@ -180,6 +184,12 @@ RAFParallax.prototype = {
 
 		return [].slice.call(nodeList);
 
+	},
+
+	getPercentage: function (a, b) {
+
+		return (a / b) * 100;
+
 	}
 
 };
@@ -191,19 +201,48 @@ RAFParallax.prototype = {
 		containerChildClassName: '.rafp-panel',
 		scrollWrapElement: '.scrollWrap',
 		breakpointCallbacks: {
-			'panel-1': function () {
-				console.log('this is panel-1 callback and does something!');
+			'panel-1': function (context) {
+				//console.log('this is panel-1 callback and does something!');
+				
+				var y = Math.abs(context.yPosition),
+					panel = context.breakpoints['panel-1'].el,
+					col = panel.querySelector('.col'),
+					panelHeight = panel.offsetHeight,
+					percentage = Math.ceil(context.getPercentage(y, panelHeight)),
+					value = '';
+
+				if (percentage <= 100) {
+
+					context.scrollLock = true;
+
+					// animate column
+					col.style.webkitTransform = "translate3d(" + (-1 * percentage) + "%, 0, 0)";
+					
+					panel.style.webkitTransform = "translate3d(0px, " + -1 * context.yPosition + "px, 0px)";
+
+				} else {
+
+					context.scrollLock = false;
+
+					col.style.webkitTransform = "translate3d(-100%, 0, 0)";
+
+					panel.style.webkitTransform = "translate3d(0px, " + context.yPosition + "px, 0px)";
+
+				}
+
 			},
 
-			'panel-2': function () {
+			'panel-2': function (context) {
+				
 				console.log('this is panel-2 callback and does something!');
+	
 			},
 
-			'panel-3': function () {
+			'panel-3': function (context) {
 				console.log('this is panel-3 callback and does something!');
 			},
 
-			'panel-4': function () {
+			'panel-4': function (context) {
 				console.log('this is panel-4 callback and does something!');
 			},
 
