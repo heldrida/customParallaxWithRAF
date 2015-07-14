@@ -167,7 +167,7 @@ RAFParallax.prototype = {
 
 			bp = this.breakpoints[k];
 
-			if (y >= bp.pos.top && y <= bp.pos.bottom) {
+			if (y >= bp.pos.top /*&& y <= bp.pos.bottom*/) {
 
 				if (typeof bp.callback === "function") {
 
@@ -225,21 +225,22 @@ RAFParallax.prototype = {
 		scrollWrapElement: '.scrollWrap',
 		breakpointCallbacks: {
 			'panel-1': function (context) {
-				//console.log('this is panel-1 callback and does something!');
 
 				var y = Math.abs(context.yPosition),
-					panel = context.breakpoints['panel-1'].el,
+					p = context.breakpoints['panel-1'],
+					panel = p.el,
 					col = panel.querySelector('.col'),
-					panelHeight = panel.offsetHeight,
-					percentage = Math.ceil(context.getPercentage(y, panelHeight)),
+					endPos = p.pos.bottom,
+					percentage = Math.ceil(context.getPercentage(y, endPos)),
 					value = '';
 
-				if (percentage < 100) {
+				if (percentage <= 100) {
 
 					context.scrollLock = true;
 
 					// animate column
 					col.style[context.transformProperty] = "translate3d(" + (-1 * percentage) + "%, 0, 0)";
+
 					panel.style[context.transformProperty] = "translate3d(0px, " + -1 * context.yPosition + "px, 0px)";
 
 				} else {
@@ -247,24 +248,42 @@ RAFParallax.prototype = {
 					context.scrollLock = false;
 
 					col.style[context.transformProperty] = "translate3d(-100%, 0, 0)";
-					panel.style[context.transformProperty] = "translate3d(0px, " + context.yPosition + "px, 0px)";
+					panel.style[context.transformProperty] = "translate3d(0px, " + panel.offsetHeight + "px, 0px)";
 
 				}
 
 			},
 
 			'panel-2': function (context) {
+				/*
+				var y = Math.abs(context.yPosition),
+					p = context.breakpoints['panel-2'],
+					panel = p.el,
+					endPos = p.pos.bottom,
+					percentage = Math.ceil(context.getPercentage(y, endPos)),
+					value = '';
 
-				console.log('this is panel-2 callback and does something!');
+				if (percentage <= 100) {
 
+					context.scrollLock = true;
+
+					panel.style[context.transformProperty] = "translate3d(0px, " + -1 * context.yPosition + "px, 0px)";
+
+				} else {
+
+					context.scrollLock = false;
+					panel.style[context.transformProperty] = "translate3d(0px, " + panel.offsetHeight + "px, 0px)";
+
+				}
+				*/
 			},
 
 			'panel-3': function (context) {
-				console.log('this is panel-3 callback and does something!');
+
 			},
 
 			'panel-4': function (context) {
-				console.log('this is panel-4 callback and does something!');
+
 			},
 
 		}
