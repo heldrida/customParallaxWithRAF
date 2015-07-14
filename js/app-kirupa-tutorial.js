@@ -37,7 +37,13 @@ RAFParallax.prototype = {
 		this.breakpoints = {};
 		this.breakpointCallbacks = params.breakpointCallbacks;
 		this.setBreakpointPositions();
+		this.end_scroll_y = (function () {
 
+			var lastObj = this.breakpoints[Object.keys(this.breakpoints)[Object.keys(this.breakpoints).length - 1]];
+
+			return lastObj.pos.top;
+
+		}.bind(this))();
 		this.resize();
 		this.listeners();
 
@@ -87,8 +93,8 @@ RAFParallax.prototype = {
 			this.calculated_scroll_y = 0;
 		}
 
-		if (Math.abs(parseInt(this.yPosition)) > this.breakpoints['panel-4'].pos.top) {
-			this.calculated_scroll_y = (this.breakpoints['panel-4'].pos.top) * -1;
+		if (Math.abs(parseInt(this.yPosition)) > this.end_scroll_y) {
+			this.calculated_scroll_y = (this.end_scroll_y) * -1;
 		}
 
 		// deal with different browsers calculating the delta differently
@@ -228,13 +234,12 @@ RAFParallax.prototype = {
 					percentage = Math.ceil(context.getPercentage(y, panelHeight)),
 					value = '';
 
-				if (percentage <= 100) {
+				if (percentage < 100) {
 
 					context.scrollLock = true;
 
 					// animate column
 					col.style[context.transformProperty] = "translate3d(" + (-1 * percentage) + "%, 0, 0)";
-
 					panel.style[context.transformProperty] = "translate3d(0px, " + -1 * context.yPosition + "px, 0px)";
 
 				} else {
@@ -242,7 +247,6 @@ RAFParallax.prototype = {
 					context.scrollLock = false;
 
 					col.style[context.transformProperty] = "translate3d(-100%, 0, 0)";
-
 					panel.style[context.transformProperty] = "translate3d(0px, " + context.yPosition + "px, 0px)";
 
 				}
