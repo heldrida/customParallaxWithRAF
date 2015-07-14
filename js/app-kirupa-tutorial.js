@@ -11,7 +11,7 @@ function RAFParallax (params) {
 RAFParallax.prototype = {
 
 	init: function (params) {
-		 
+
 		window.scroll(0, 0);
 
 		this.scrollLock = false;
@@ -54,6 +54,7 @@ RAFParallax.prototype = {
 	// vendor prefix management
 	getSupportedPropertyName: function (properties) {
 		for (var i = 0; i < properties.length; i++) {
+			console.log(properties[i]);
 			if (typeof document.body.style[properties[i]] !== "undefined") {
 				return properties[i];
 			}
@@ -78,7 +79,9 @@ RAFParallax.prototype = {
 			e.preventDefault();
 		}
 
-		this.calculated_scroll_y -= e.wheelDelta;
+		var d = this.wheel(e);
+
+		this.calculated_scroll_y -= d;
 
 		if (this.calculated_scroll_y > 0) {
 			this.calculated_scroll_y = 0;
@@ -89,15 +92,7 @@ RAFParallax.prototype = {
 		}
 
 		// deal with different browsers calculating the delta differently
-		if (e.wheelDelta) {
-
-			this.mouseDelta = e.wheelDelta;
-
-		} else if (e.detail) {
-
-			this.mouseDelta = -e.detail;
-
-		}
+		this.mouseDelta = d;
 
 	},
 
@@ -111,8 +106,8 @@ RAFParallax.prototype = {
 	setTranslate3DTransform: function  (element, yPosition) {
 
 		var value = "translate3d(0px" + ", " + yPosition + "px" + ", 0)";
-	
-		element.style.webkitTransform = value;
+
+		element.style[this.transformProperty] = value;
 
 	},
 
@@ -190,6 +185,28 @@ RAFParallax.prototype = {
 
 		return (a / b) * 100;
 
+	},
+
+	/*
+	* Orginal: http://stackoverflow.com/questions/5527601/normalizing-mousewheel-speed-across-browsers
+	*/
+	wheel: function (event) {
+
+	    var normalized;
+
+	    if (event.wheelDelta) {
+
+	        normalized = (event.wheelDelta % 120 - 0) == -0 ? event.wheelDelta / 120 : event.wheelDelta / 12;
+
+	    } else {
+
+	        var rawAmmount = event.deltaY ? event.deltaY : event.detail;
+	        normalized = -(rawAmmount % 3 ? rawAmmount * 10 : rawAmmount / 3);
+
+	    }
+
+	    return normalized;
+
 	}
 
 };
@@ -203,7 +220,7 @@ RAFParallax.prototype = {
 		breakpointCallbacks: {
 			'panel-1': function (context) {
 				//console.log('this is panel-1 callback and does something!');
-				
+
 				var y = Math.abs(context.yPosition),
 					panel = context.breakpoints['panel-1'].el,
 					col = panel.querySelector('.col'),
@@ -216,26 +233,26 @@ RAFParallax.prototype = {
 					context.scrollLock = true;
 
 					// animate column
-					col.style.webkitTransform = "translate3d(" + (-1 * percentage) + "%, 0, 0)";
-					
-					panel.style.webkitTransform = "translate3d(0px, " + -1 * context.yPosition + "px, 0px)";
+					col.style[context.transformProperty] = "translate3d(" + (-1 * percentage) + "%, 0, 0)";
+
+					panel.style[context.transformProperty] = "translate3d(0px, " + -1 * context.yPosition + "px, 0px)";
 
 				} else {
 
 					context.scrollLock = false;
 
-					col.style.webkitTransform = "translate3d(-100%, 0, 0)";
+					col.style[context.transformProperty] = "translate3d(-100%, 0, 0)";
 
-					panel.style.webkitTransform = "translate3d(0px, " + context.yPosition + "px, 0px)";
+					panel.style[context.transformProperty] = "translate3d(0px, " + context.yPosition + "px, 0px)";
 
 				}
 
 			},
 
 			'panel-2': function (context) {
-				
+
 				console.log('this is panel-2 callback and does something!');
-	
+
 			},
 
 			'panel-3': function (context) {
