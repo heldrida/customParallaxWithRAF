@@ -255,10 +255,11 @@ RAFParallax.prototype = {
 			},
 
 			'panel-2': function (context) {
-				/*
+
 				var y = Math.abs(context.yPosition),
 					p = context.breakpoints['panel-2'],
 					panel = p.el,
+					col = panel.querySelector('.col'),
 					endPos = p.pos.bottom,
 					percentage = Math.ceil(context.getPercentage(y, endPos)),
 					value = '';
@@ -267,15 +268,16 @@ RAFParallax.prototype = {
 
 					context.scrollLock = true;
 
-					panel.style[context.transformProperty] = "translate3d(0px, " + -1 * context.yPosition + "px, 0px)";
+					panel.style[context.transformProperty] = "translate3d(0px, " + (-1 * (context.yPosition + context.breakpoints['panel-1-fixed-empty'].pos.bottom)) + "px, 0px)";
 
 				} else {
 
 					context.scrollLock = false;
-					panel.style[context.transformProperty] = "translate3d(0px, " + panel.offsetHeight + "px, 0px)";
+
+					panel.style[context.transformProperty] = "translate3d(0px, " + ((panel.offsetHeight + context.breakpoints['panel-1-fixed-empty'].pos.bottom)) + "px, 0px)";
 
 				}
-				*/
+
 			},
 
 			'panel-3': function (context) {
