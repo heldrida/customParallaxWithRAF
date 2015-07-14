@@ -198,6 +198,8 @@ RAFParallax.prototype = {
 	*/
 	wheel: function (event) {
 
+		console.log('viewPortPercentage: ', this.viewPortPercentage());
+
 	    var normalized;
 
 	    if (event.wheelDelta) {
@@ -213,6 +215,14 @@ RAFParallax.prototype = {
 
 	    return normalized;
 
+	},
+
+	viewPortPercentage: function () {
+
+		var percentage = Math.ceil(this.getPercentage(this.yPosition, this.scrollWrap.offsetHeight));
+
+		return Math.abs(percentage);
+
 	}
 
 };
@@ -226,57 +236,11 @@ RAFParallax.prototype = {
 		breakpointCallbacks: {
 			'panel-1': function (context) {
 
-				var y = Math.abs(context.yPosition),
-					p = context.breakpoints['panel-1'],
-					panel = p.el,
-					col = panel.querySelector('.col'),
-					endPos = p.pos.bottom,
-					percentage = Math.ceil(context.getPercentage(y, endPos)),
-					value = '';
-
-				if (percentage <= 100) {
-
-					context.scrollLock = true;
-
-					// animate column
-					col.style[context.transformProperty] = "translate3d(" + (-1 * percentage) + "%, 0, 0)";
-
-					panel.style[context.transformProperty] = "translate3d(0px, " + -1 * context.yPosition + "px, 0px)";
-
-				} else {
-
-					context.scrollLock = false;
-
-					col.style[context.transformProperty] = "translate3d(-100%, 0, 0)";
-					panel.style[context.transformProperty] = "translate3d(0px, " + panel.offsetHeight + "px, 0px)";
-
-				}
 
 			},
 
 			'panel-2': function (context) {
 
-				var y = Math.abs(context.yPosition),
-					p = context.breakpoints['panel-2'],
-					panel = p.el,
-					col = panel.querySelector('.col'),
-					endPos = p.pos.bottom,
-					percentage = Math.ceil(context.getPercentage(y, endPos)),
-					value = '';
-
-				if (percentage <= 100) {
-
-					context.scrollLock = true;
-
-					panel.style[context.transformProperty] = "translate3d(0px, " + (-1 * (context.yPosition + context.breakpoints['panel-1-fixed-empty'].pos.bottom)) + "px, 0px)";
-
-				} else {
-
-					context.scrollLock = false;
-
-					panel.style[context.transformProperty] = "translate3d(0px, " + ((panel.offsetHeight + context.breakpoints['panel-1-fixed-empty'].pos.bottom)) + "px, 0px)";
-
-				}
 
 			},
 
